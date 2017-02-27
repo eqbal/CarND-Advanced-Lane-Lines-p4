@@ -78,3 +78,34 @@ The binary thresholding code can be found in the `mask_image` method in `helpers
 
 ![Dist1](./assets/thresholding.png)
 
+
+#### 4. Perspective Transform
+
+For this section I wrote `PerspectiveTransformer` class, which allow me to wrap/unwrap percpective in single line while only having to compute the transformation matrix once.
+
+I used `cv2.getPrespectiveTranform` to compute the transformation and inverse it. And then applied the images using `cv2.warpPerspective`. The code looks like this:
+
+```python
+class PerspectiveTransformer():
+    def __init__(self, src, dist):
+        self.Mpersp = cv2.getPerspectiveTransform(src, dst)
+        self.Minv   = cv2.getPerspectiveTransform(dst, src)
+
+    # Apply perspective transform
+    def warp(self, img):
+        return cv2.warpPerspective(img, self.Mpersp, (img.shape[1], img.shape[0]))
+
+    # Reverse perspective transform
+    def unwarp(self, img):
+        return cv2.warpPerspective(img, self.Minv, (img.shape[1], img.shape[0]))
+```
+
+For my transformation, I went with with the following `src` and `dst` points:
+
+```python
+src = np.array([[585, 460], [203, 720], [1127, 720], [695, 460]]).astype(np.float32)
+dst = np.array([[320, 0], [320, 720], [960, 720], [960, 0]]).astype(np.float32)
+```
+
+
+![Dist1](./assets/transformation.png)
