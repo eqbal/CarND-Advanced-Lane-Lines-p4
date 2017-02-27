@@ -55,4 +55,7 @@ Once we have calibrated the camera as above, we can now apply the camera matrix 
 
 I use `numpy.mgrid` in order to create a matrix of (x, y, z) object points. Once I have the image points and the matching object points for the entire calibration dataset, I then use `cv2.calibrateCamera` to create the camera matrix and distortion coefficients. These variables are stored inside the class, until `calibraion.undistort(img)` is called, at which point they are passed into `cv.undistort`, returning an undistorted version of the user's input image
 
+![Dist1](./assets/dist1.png)
 
+
+![Dist1](./assets/dist2.png)
