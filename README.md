@@ -7,8 +7,8 @@
     
 1. Camera Calibration
 2. Distortion Correction
-3. Perspective Transform
-4. Color and Gradient Threshold
+3. Binary Thresholding
+4. Perspective Transform
 5. Detect Lane Lines
 6. Determine Lane Curvature
 7. Impose Lane Boundaries on Original Image
@@ -59,3 +59,22 @@ I use `numpy.mgrid` in order to create a matrix of (x, y, z) object points. Once
 
 
 ![Dist1](./assets/dist2.png)
+
+
+#### 3. Binary Thresholding
+
+The Thresholding stage is where we process the undistorted image and attempt to mask out which pixels are part of the lanes and remove those that are not. 
+
+To achieve this, I used combination of different transforms.
+
+First, I used `cv2.cvtColor()` to convert to HLS space, where I created a binary mask, detecting pixels where hue < 100 and saturation > 100 as lane line pixels.
+
+After this, I also created a mask which used a threshold on absolute Sobel magnitude. I decided to go with mask which applied different Sobel thresholds to the top and bottom halves of the image. as the top half of the image had smoother gradients due to the prospective transform. At the end, I selected any pixel > 10 sobel magnitude at the top of the image, and > 35 at the bottom of the image.
+
+I found that the HLS threshold worked better closer to the car, and the Sobel threshold worked better further away. So, a bitwise `OR` of these two thresholds gave me one that I was very happy with.
+
+The binary thresholding code can be found in the `mask_image` method in `helpers.py` file.
+
+
+![Dist1](./assets/thresholding.png)
+
