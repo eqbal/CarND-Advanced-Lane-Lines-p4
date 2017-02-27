@@ -4,11 +4,10 @@ import matplotlib.image as mpimg
 
 class CameraCalibrate():
 
-    def __init__(self, imgs, hcount, vcount):
+    def __init__(self, hcount, vcount):
         self.mtx = None
         self.dist = None
         self.size = None
-        self.imgs = imgs
         self.hcount = hcount
         self.vcount = vcount
         self.calibrated = False
@@ -17,6 +16,9 @@ class CameraCalibrate():
         objpoints, imgpoints = self.get_all_points()
         self.mtx, self.dist  = self.calibrate(objpoints, imgpoints)
 
+    def get_images(self):
+        self.imgs = [mpimg.imread(f) for f in sorted(
+            glob.glob('./camera_cal/*.jpg'))]
 
     def gridspace(self):
         obj = np.zeros((self.hcount * self.vcount, 3)).astype(np.float32)
