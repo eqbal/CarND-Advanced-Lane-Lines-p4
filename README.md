@@ -36,8 +36,8 @@ It works like this:
 # Calibrate the camera and create camera matrix and distortion coefficients
 cc = CameraCalibrate(hcount=6, vcount=9)
 # Get the images from /camera_cal folder
-cc.get_images
-cc.call
+cc.get_images()
+cc.call()
 # Run it in new images
 cc.undistort(img)
 ```

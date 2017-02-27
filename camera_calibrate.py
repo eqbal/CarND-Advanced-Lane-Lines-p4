@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import matplotlib.image as mpimg
+import glob
 
 class CameraCalibrate():
 
@@ -42,7 +43,7 @@ class CameraCalibrate():
         imgpoints = []
 
         for i, img in enumerate(self.imgs):
-            imgp, objp = self._get_points(img)
+            imgp, objp = self.get_points(img)
             if imgp is None:
                 print('[CameraCalibration] Image {} skipped during calibrations'.format(i))
             else:
