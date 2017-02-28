@@ -81,7 +81,7 @@ The binary thresholding code can be found in the `mask_image` method in `helpers
 
 #### 4. Perspective Transform
 
-For this section I wrote `PerspectiveTransformer` class, which allow me to wrap/unwrap percpective in single line while only having to compute the transformation matrix once.
+For this section I wrote `PerspectiveTransformer` class, which allow me to wrap/unwrap perspective in single line while only having to compute the transformation matrix once.
 
 I used `cv2.getPrespectiveTranform` to compute the transformation and inverse it. And then applied the images using `cv2.warpPerspective`. The code looks like this:
 
@@ -119,7 +119,7 @@ First, in order to know where the lane line begin, I created a histogram of the 
 
 ![peak-lane](./assets/find_lane_1.png)
 
-The secound step was to use `numpy` to split the image into a specific number of chunks (10 to be exact). In each chuck, we do:
+The second step was to use `numpy` to split the image into a specific number of chunks (10 to be exact). In each chuck, we do:
 
   - Take the mean pixel x-position of the last chuck 
   - Select all masked pixels within 80 pixels of this value
@@ -212,7 +212,7 @@ def sliding_window_poly(final_mask, left_peak, right_peak, num_chunks=10, leeway
 
 #### 6. Determine Lane Curvature
 
-To calculate the lane curvature radius, I scaled the x and y of my lane pixel and then fit a new polynomial to the data. Using the new ploynomial, I could the use the radius of curvature formula to calculate the curve radius in metres at the base of the image.
+To calculate the lane curvature radius, I scaled the x and y of my lane pixel and then fit a new polynomial to the data. Using the new polynomial, I could the use the radius of curvature formula to calculate the curve radius in metres at the base of the image.
 
 I performed this on both the left and right lane line and then took the mean of these values for my final curvature value. I took a weighted average with calculated curvature of the last frame, allowing the displayed curvature value to be more accurate and smooth representation.
 
@@ -430,4 +430,10 @@ The final result of my algorithm for this project video can be found here:
 
 [![Advanced Lane Line Detection](http://img.youtube.com/vi/xmYNKJdVdz4/0.jpg)](http://www.youtube.com/watch?v=xmYNKJdVdz4)
 
+#### Conclusion
+
+
+This was an absolutely an awesome project that needed alot of engineering. At first the lanes were all over the place and very jittery. I applied techniques to help such as make sure that the polygon that comes after was of similar shape, I also ruled out polygons that failed to meet area requirements. When there errors across the last correct polygon was written instead.
+
+Future improvements to avoid the algorithm from failing is a much cleaner bit mask extraction. When tested on the most difficult video the main problem was additional noise creating points that ruined the polynomial fit. With more time a better bit mask extraction can be applied to enhance this algorithm.
 
