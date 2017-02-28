@@ -33,8 +33,6 @@ class LaneLineFinder():
         self.transform = PerspectiveTransformer(src, dst)
 
     def process_frame(self, img):
-        print("start.....")
-        print(img)
         # Undistort the image using the camera calibration
         img = self.cc.undistort(img)
 
@@ -46,7 +44,6 @@ class LaneLineFinder():
 
         # Apply the HLS/Sobel mask to detect lane pixels
         mask = mask_image(img)
-        print(mask)
 
         # Find initial histogram peaks
         left_peak, right_peak = find_initial_peaks(mask)
@@ -58,7 +55,7 @@ class LaneLineFinder():
         if self.last_l_poly is None:
             # If first frame, initialise buffer
             self.last_l_poly = l_poly
-            last_r_poly = r_poly
+            self.last_r_poly = r_poly
         else:
             # Otherwise, update buffer
             l_poly = (1 - self.poly_alpha) * self.last_l_poly + self.poly_alpha * l_poly
