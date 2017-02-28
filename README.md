@@ -210,7 +210,32 @@ def sliding_window_poly(final_mask, left_peak, right_peak, num_chunks=10, leeway
 
 ```
 
+#### 6. Determine Lane Curvature
 
+To calculate the lane curvature radius, I scaled the x and y of my lane pixel and then fit a new polynomial to the data. Using the new ploynomial, I could the use the radius of curvature formula to calculate the curve radius in metres at the base of the image.
+
+I performed this on both the left and right lane line and then took the mean of these values for my final curvature value. I took a weighted average with calculated curvature of the last frame, allowing the displayed curvature value to be more accurate and smooth representation.
+
+Check out the code I used below: 
+
+```python
+# helpers.py
+
+def get_curvature(poly, mask):
+    yscale = 30 / 720 # Real world metres per y pixel
+    xscale = 3.7 / 700 # Real world metres per x pixel
+
+    # Convert polynomial to set of points for refitting
+    ploty = np.linspace(0, mask.shape[0]-1, mask.shape[0])
+    fitx = poly[0] * ploty ** 2 + poly[1] * ploty + poly[2]
+
+    # Fit new polynomial
+    fit_cr = np.polyfit(ploty * yscale, fitx * xscale, 2)
+
+    # Calculate curve radius
+    curverad = ((1 + (2 * fit_cr[0] * np.max(ploty) * yscale + fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * fit_cr[0])
+    return curverad
+```
 
 
 #### Video Output
