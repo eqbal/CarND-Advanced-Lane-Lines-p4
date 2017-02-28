@@ -109,3 +109,15 @@ dst = np.array([[320, 0], [320, 720], [960, 720], [960, 0]]).astype(np.float32)
 
 
 ![Dist1](./assets/transformation.png)
+
+
+
+
+
+#### Video Output
+
+The final result of my algorithm for this project video can be found here: 
+
+[![Advanced Lane Line Detection](http://img.youtube.com/vi/xmYNKJdVdz4/0.jpg)](http://www.youtube.com/watch?v=xmYNKJdVdz4)
+
+
