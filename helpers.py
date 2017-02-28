@@ -1,3 +1,6 @@
+import cv2
+import numpy as np
+
 def mask_image(img):
     img = img.copy()
 
@@ -126,28 +129,6 @@ def get_curvature(poly, mask):
     # Calculate curve radius
     curverad = ((1 + (2 * fit_cr[0] * np.max(ploty) * yscale + fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * fit_cr[0])
     return curverad
-
-def plot_poly_orig(fitl, fitr, orig):
-    # Draw lines from polynomials
-    ploty = np.linspace(0, orig.shape[0]-1, orig.shape[0])
-    fitl = fitl[0]*ploty**2 + fitl[1]*ploty + fitl[2]
-    fitr = fitr[0]*ploty**2 + fitr[1]*ploty + fitr[2]
-
-    pts_left = np.array([np.transpose(np.vstack([fitl, ploty]))])
-    pts_right = np.array([np.flipud(np.transpose(np.vstack([fitr, ploty])))])
-    pts = np.hstack((pts_left, pts_right))
-
-    # Create an overlay from the lane lines
-    overlay = np.zeros_like(orig).astype(np.uint8)
-    cv2.fillPoly(overlay, np.int_([pts]), (0,255, 0))
-
-    # Apply inverse transform to the overlay to plot it on the original road
-    overlay = transform.unwarp(overlay)
-
-    # Add the overlay to the original unwarped image
-    result = cv2.addWeighted(orig, 1, overlay, 0.3, 0)
-    return result
-
 
 def find_offset(l_poly, r_poly):
     lane_width = 3.7  # metres

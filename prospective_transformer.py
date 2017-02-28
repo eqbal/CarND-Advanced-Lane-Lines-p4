@@ -1,5 +1,7 @@
+import cv2
+
 class PerspectiveTransformer():
-    def __init__(self, src, dist):
+    def __init__(self, src, dst):
         self.Mpersp = cv2.getPerspectiveTransform(src, dst)
         self.Minv   = cv2.getPerspectiveTransform(dst, src)
 
