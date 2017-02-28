@@ -131,7 +131,7 @@ I used `numpy.polyfit` to then fit a quadratic curve to each lane line, which ca
 
 To smooth out the final curve result, I took a weighted mean with the last frame's polynomial coefficients (`w=0.2`).
 
-![peak-lane-2](./assets/find_lane_2.png)
+![peak-lane-2](./assets/lane_line_2.png)
 
 For more details check out the `helpers.py` file:
 
