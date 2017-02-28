@@ -14,11 +14,6 @@
 7. Impose Lane Boundaries on Original Image
 8. Output Visual Display of Lane Boundaries and Numerical Estimation of Lane Curvature and Vehicle Position
 
-###Flow:
-
-Here is the flow that I'm using for lane detection: 
-
-... to be filled later on when the final module built
 
 #### 1. Camera Calibration
 
@@ -430,10 +425,17 @@ The final result of my algorithm for this project video can be found here:
 
 [![Advanced Lane Line Detection](http://img.youtube.com/vi/xmYNKJdVdz4/0.jpg)](http://www.youtube.com/watch?v=xmYNKJdVdz4)
 
+### The final flow:
+
+Here is the flow that I'm using for lane detection: 
+
+![flow](./assets/flow.png)
+
 #### Conclusion
 
 
 This was an absolutely an awesome project that needed alot of engineering. At first the lanes were all over the place and very jittery. I applied techniques to help such as make sure that the polygon that comes after was of similar shape, I also ruled out polygons that failed to meet area requirements. When there errors across the last correct polygon was written instead.
 
 Future improvements to avoid the algorithm from failing is a much cleaner bit mask extraction. When tested on the most difficult video the main problem was additional noise creating points that ruined the polynomial fit. With more time a better bit mask extraction can be applied to enhance this algorithm.
+
 
