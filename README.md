@@ -418,6 +418,12 @@ white_clip = input_video.fl_image(lane_fider.process_frame)
 
 %time white_clip.write_videofile(output_video, audio=False)
 ```
+
+
+The `process_frame` function, outputs the original image with the lane area drawn on top, and the curvature radius and lane offset in the top left corner. 
+
+![pipeline](./assets/pipeline.png)
+
 #### Video Output
 
 The final result of my algorithm for this project video can be found here: 
