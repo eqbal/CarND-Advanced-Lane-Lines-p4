@@ -425,7 +425,7 @@ The final result of my algorithm for this project video can be found here:
 
 [![Advanced Lane Line Detection](http://img.youtube.com/vi/xmYNKJdVdz4/0.jpg)](http://www.youtube.com/watch?v=xmYNKJdVdz4)
 
-### The final flow:
+#### The final flow:
 
 Here is the flow that I'm using for lane detection: 
 
