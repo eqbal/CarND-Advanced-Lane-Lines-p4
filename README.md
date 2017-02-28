@@ -111,6 +111,105 @@ dst = np.array([[320, 0], [320, 720], [960, 720], [960, 0]]).astype(np.float32)
 ![Dist1](./assets/transformation.png)
 
 
+#### 5. Detect Lane Lines
+
+This stage is where we will try to extract the actual lane pixels for both the left and right lanes from the images.
+
+First, in order to know where the lane line begin, I created a histogram of the masked pixels in the bottom half of the image, and selected the biggest peak in both the left and right sides.
+
+![peak-lane](./assets/find_lane_1.png)
+
+The secound step was to use `numpy` to split the image into a specific number of chunks (10 to be exact). In each chuck, we do:
+
+  - Take the mean pixel x-position of the last chuck 
+  - Select all masked pixels within 80 pixels of this value
+  - Add coordinates of these pixels on an array 
+
+So, I ended up with an array of (x,y) values for both the left and the right lane line. 
+
+I used `numpy.polyfit` to then fit a quadratic curve to each lane line, which can then be plotted on the input frame.
+
+To smooth out the final curve result, I took a weighted mean with the last frame's polynomial coefficients (`w=0.2`).
+
+![peak-lane-2](./assets/find_lane_2.png)
+
+For more details check out the `helpers.py` file:
+
+```python
+# helpers.py
+
+# Find the peaks of the bottom half, for sliding window analysis
+def find_initial_peaks(final_mask, bottom_pct=0.5):
+    # bottom_pct: How much of the bottom to use for initial tracer placement
+    
+    shape = final_mask.shape
+    
+    bottom_sect = final_mask[-int(bottom_pct*shape[0]):, :]
+    
+    left_peak = bottom_sect[:, :int(0.5*shape[1])].sum(axis=0).argmax()
+    right_peak = bottom_sect[:, int(0.5*shape[1]):].sum(axis=0).argmax() + 0.5*shape[1]
+    
+    # Return x-position of the two peaks
+    return left_peak, right_peak
+
+# This applies the sliding window approach to find lane pixels, and then fits a polynomial to the found pixels.
+def sliding_window_poly(final_mask, left_peak, right_peak, num_chunks=10, leeway=80):
+    # num_chunks: Number of chunks to split sliding window into
+    # leeway: Number of pixels on each side horizontally to consider
+    
+    # Split the image vertically into chunks, for analysis.
+    chunks = []
+    assert final_mask.shape[0] % num_chunks == 0, 'Number of chunks must be a factor of vertical resolution!'
+    px = final_mask.shape[0] / num_chunks # Pixels per chunk
+    for i in range(num_chunks):
+        chunk = final_mask[i*px:(i+1)*px, :]
+        chunks.append(chunk)
+
+    # Reverse the order of the chunks, in order to work from the bottom up
+    chunks = chunks[::-1]
+    
+    # Loop over chunks, finding the lane centre within the leeway.
+    lefts = [left_peak]
+    rights = [right_peak]
+    
+    left_px, left_py, right_px, right_py = [], [], [], []
+    
+    for i, chunk in enumerate(chunks):
+        offset = (num_chunks-i-1)*px
+        
+        last_left = int(lefts[-1])
+        last_right = int(rights[-1])
+        
+        # Only consider pixels within +-leeway of last chunk location
+        temp_left_chunk = chunk.copy()
+        temp_left_chunk[:, :last_left-leeway] = 0
+        temp_left_chunk[:, last_left+leeway:] = 0
+        
+        temp_right_chunk = chunk.copy()
+        temp_right_chunk[:, :last_right-leeway] = 0
+        temp_right_chunk[:, last_right+leeway:] = 0
+        
+        # Save the x, y pixel indexes for calculating the polynomial
+        left_px.append(temp_left_chunk.nonzero()[1])
+        left_py.append(temp_left_chunk.nonzero()[0] + offset)
+        
+        right_px.append(temp_right_chunk.nonzero()[1])
+        right_py.append(temp_right_chunk.nonzero()[0] + offset)
+    
+    # Create x and y indice arrays for both lines
+    left_px = np.concatenate(left_px)
+    left_py = np.concatenate(left_py)
+    right_px = np.concatenate(right_px)
+    right_py = np.concatenate(right_py)
+    
+    # Fit the polynomials!
+    l_poly = np.polyfit(left_py, left_px, 2)
+    r_poly = np.polyfit(right_py, right_px, 2)
+    
+    return l_poly, r_poly
+
+```
+
 
 
 
